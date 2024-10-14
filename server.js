@@ -5,6 +5,7 @@ const connectDb = require("./Config/DbConnection");
 const errorHandler = require("./Middleware/errorHandler"); 
 const cors = require('cors'); 
 const bodyParser = require('body-parser'); 
+const bcrypt = require('bcryptjs');
 
 mongoose.set('strictQuery', false); 
 

@@ -1,24 +1,22 @@
-const asyncHandler = require("express-async-handler");
 const jwt = require("jsonwebtoken");
 
-const validateToken = asyncHandler(async (req, res, next) => {
-  let token;
-  let authHeader = req.headers.Authorization || req.headers.authorization;
+const validateToken = (req, res, next) => {
+  const authHeader = req.headers.authorization || req.headers.Authorization;
 
-  if (authHeader && authHeader.startsWith("Bearer")) {
-    token = authHeader.split(" ")[1];
-    jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, decoded) => {
-      if (err) {
-        res.status(401);
-        throw new Error("User is not authorized");
-      }
-      req.user = decoded.user;
-      next();
-    });
-  } else {
-    res.status(401);
-    throw new Error("User is not authorized or token is missing");
+  if (!authHeader?.startsWith("Bearer ")) {
+    return res.status(401).json({ message: "Token is missing or invalid" });
   }
-});
+
+  const token = authHeader.split(" ")[1];
+
+  try {
+    const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+    req.user = decoded.user;
+    next();
+  } catch (err) {
+    console.error("Token validation error:", err);
+    return res.status(403).json({ message: "Invalid or expired token" });
+  }
+};
 
 module.exports = validateToken;

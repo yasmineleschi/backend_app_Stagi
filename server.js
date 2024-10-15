@@ -18,7 +18,9 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use("/api/publications", require("./Routers/publicationRouter"));
 app.use("/api/users", require("./Routers/UserRouters"));
 
-// Error handling middleware
-app.use(errorHandler);
+app.use('/api/users', require('./Routers/UserRouters')); 
+app.use('/api/users/profile', require('./Routers/StudentRouters')); 
+
+app.use(errorHandler); 
 
 app.listen(port, () => console.log(`Server running on port ${port}`));

@@ -5,29 +5,52 @@ const User = require("../Models/User");
 
 // Register a new user
 const registerUser = asyncHandler(async (req, res) => {
-  const { username, email, password } = req.body;
 
-  if (!username || !email || !password) {
+  const { username, email, password, role } = req.body;
+
+  if (!username || !email || !password || !role) {
     res.status(400);
     throw new Error("All fields are mandatory!");
   }
 
-  if (await User.findOne({ email }) || await User.findOne({ username })) {
+
+  const userAvailable = await User.findOne({ email });
+  if (userAvailable) {
     res.status(400);
     throw new Error("User already registered!");
   }
 
+  
+  const userAvailable2 = await User.findOne({ username });
+  if (userAvailable2) {
+    res.status(400);
+    throw new Error("Username already taken!");
+  }
+
+ 
   const hashedPassword = await bcrypt.hash(password, 10);
+  console.log("Hashed Password: ", hashedPassword);
 
-  const user = await User.create({ username, email, password: hashedPassword });
 
+  const user = await User.create({
+    username,
+    email,
+    password: hashedPassword,
+    role,
+  });
+
+  console.log(`User created: ${user}`);
   if (user) {
     res.status(201).json({ _id: user.id, email: user.email });
   } else {
     res.status(400);
-    throw new Error("Invalid user data");
+    throw new Error("User data is not valid");
   }
 });
+
+
+
+ 
 
 // User login
 const loginUser = asyncHandler(async (req, res) => {

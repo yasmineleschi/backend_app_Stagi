@@ -75,7 +75,7 @@ const loginUser = asyncHandler(async (req, res) => {
   }
 });
 
-// Get current user
+
 const currentUser = asyncHandler(async (req, res) => {
   res.json(req.user);
 });

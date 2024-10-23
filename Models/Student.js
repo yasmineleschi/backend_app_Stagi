@@ -34,10 +34,21 @@ const studentSchema = mongoose.Schema(
       {
         degree: {
           type: String,
+          enum: ["Bac", "Licence", "Master", "Ingénierie", "Doctorat"], 
+          default: "Bac",
           required: true
         },
         institution: {
           type: String,
+          required: true
+        },
+        specialite: { 
+          type: String,
+          required: true
+        },
+        institution: {  
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "Institution",
           required: true
         },
         startDate: {

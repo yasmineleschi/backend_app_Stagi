@@ -9,8 +9,7 @@ const router = express.Router();
 
 
 router.post("/createProfile", createStudentProfile);
-
-router.put("/modifierProfile", updateStudentProfile);
+router.put("/modifierProfile/:userId", updateStudentProfile);
 router.get("/getProfile/:userId", getStudentProfile);
 
 

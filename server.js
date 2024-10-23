@@ -14,12 +14,13 @@ app.use(cors());
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// Routes
+
 app.use("/api/publications", require("./Routers/publicationRouter"));
-app.use("/api/users", require("./Routers/UserRouters"));
+
 
 app.use('/api/users', require('./Routers/UserRouters')); 
 app.use('/api/users/profile', require('./Routers/StudentRouters')); 
+app.use('/api/institutions', require('./Routers/InstitutionRouters')); 
 
 app.use(errorHandler); 
 

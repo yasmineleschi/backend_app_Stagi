@@ -14,8 +14,6 @@ app.use(cors());
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// Serve static files from the uploads folder
-app.use("/uploads", express.static("uploads"));
 
 app.use("/api/publications", require("./Routers/publicationRouter"));
 app.use("/api/users", require("./Routers/UserRouters"));

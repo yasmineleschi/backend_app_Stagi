@@ -1,9 +1,11 @@
 const express = require("express");
+
 const {
     createStudentProfile,
     updateStudentProfile,
     getStudentProfile,
 } = require("../Controllers/studentControllers"); 
+
 
 const router = express.Router();
 

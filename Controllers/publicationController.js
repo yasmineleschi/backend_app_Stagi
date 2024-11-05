@@ -40,4 +40,33 @@ const getPublications = asyncHandler(async (req, res) => {
   res.status(200).json(publications);
 });
 
-module.exports = { createPublication, getPublications, upload };
+const likePublication = asyncHandler(async (req, res) => {
+  const publication = await Publication.findById(req.params.id);
+
+  if (!publication) {
+    res.status(404);
+    throw new Error("Publication not found");
+  }
+
+  publication.likes += 1;
+  await publication.save();
+  res.status(200).json({ likes: publication.likes });
+});
+
+// Unlike a publication
+const unlikePublication = asyncHandler(async (req, res) => {
+  const publication = await Publication.findById(req.params.id);
+
+  if (!publication) {
+    res.status(404);
+    throw new Error("Publication not found");
+  }
+
+  if (publication.likes > 0) {
+    publication.likes -= 1;
+    await publication.save();
+  }
+  res.status(200).json({ likes: publication.likes });
+});
+
+module.exports = { createPublication, getPublications, upload , likePublication, unlikePublication  };

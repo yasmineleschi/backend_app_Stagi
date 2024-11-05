@@ -6,6 +6,7 @@ const publicationSchema = mongoose.Schema(
     content: { type: String, required: true },
     user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
     image: { type: String }, // Field to store image path
+    likes: { type: Number, default: 0 }
   },
   { timestamps: true }
 );

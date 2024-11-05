@@ -1,9 +1,23 @@
 const asyncHandler = require("express-async-handler");
 const Publication = require("../Models/Publication");
+const multer = require("multer");
 
-// Create a new publication
+// Configure multer storage
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "uploads/"); // Specify the uploads folder
+  },
+  filename: (req, file, cb) => {
+    cb(null, `${Date.now()}-${file.originalname}`);
+  },
+});
+
+const upload = multer({ storage }); // Initialize multer with storage configuration
+
+// Create a new publication with an optional image
 const createPublication = asyncHandler(async (req, res) => {
   const { title, content } = req.body;
+  const image = req.file ? req.file.path : null; // Save image path if provided
 
   if (!title || !content) {
     res.status(400);
@@ -13,7 +27,8 @@ const createPublication = asyncHandler(async (req, res) => {
   const publication = await Publication.create({
     title,
     content,
-    user: req.user.id, // Comes from validated JWT token
+    image, // Save image path
+    user: req.user.id,
   });
 
   res.status(201).json(publication);
@@ -25,4 +40,4 @@ const getPublications = asyncHandler(async (req, res) => {
   res.status(200).json(publications);
 });
 
-module.exports = { createPublication, getPublications };
+module.exports = { createPublication, getPublications, upload };

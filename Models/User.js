@@ -21,6 +21,9 @@ const userSchema = mongoose.Schema(
       default: "Student",
       required: [true, "Please add the user role"],
     },
+    isVerified: { type: Boolean, default: false }, 
+    
+    verificationToken: { type: String }, 
   },
   { timestamps: true }
 );

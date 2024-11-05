@@ -1,10 +1,10 @@
 const express = require('express');
-const { getFilteredInstitutions } = require('../Controllers/InstitutionControllers'); 
+const { getFilteredInstitutions , addInstitution } = require('../Controllers/InstitutionControllers'); 
 
 const router = express.Router();
 
 
 router.get('/getinstitutions', getFilteredInstitutions); 
-
+router.post('/add', addInstitution); 
 
 module.exports = router;

@@ -6,6 +6,8 @@ const bodyParser = require("body-parser");
 const connectDb = require("./Config/DbConnection");
 const errorHandler = require("./Middleware/errorHandler");
 
+const path = require("path");
+
 connectDb();
 const app = express();
 const port = process.env.PORT || 5000;
@@ -23,3 +25,4 @@ app.use("/api/institutions", require("./Routers/InstitutionRouters"));
 app.use(errorHandler);
 
 app.listen(port, () => console.log(`Server running on port ${port}`));
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));

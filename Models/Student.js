@@ -100,7 +100,6 @@ const studentSchema = mongoose.Schema(
         }
       }
     ],
-    
   },
   {
     timestamps: true 

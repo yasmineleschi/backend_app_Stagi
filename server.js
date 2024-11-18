@@ -19,6 +19,7 @@ app.use("/api/publications", require("./Routers/publicationRouter"));
 app.use("/api/users", require("./Routers/UserRouters"));
 app.use("/api/users/profile", require("./Routers/StudentRouters"));
 app.use("/api/institutions", require("./Routers/InstitutionRouters"));
+app.use("/api/companies",  require("./Routers/CompanyRouters"));
 
 app.use(errorHandler);
 

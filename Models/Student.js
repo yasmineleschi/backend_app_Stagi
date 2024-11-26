@@ -100,6 +100,12 @@ const studentSchema = mongoose.Schema(
         }
       }
     ],
+    attachments: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Attachment"
+      }
+    ], 
   },
   {
     timestamps: true 

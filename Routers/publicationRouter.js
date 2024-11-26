@@ -12,7 +12,16 @@ const validateToken = require("../Middleware/validateTokenHandler");
 
 const router = express.Router();
 
-router.post("/", validateToken, upload.single("image"), createPublication); // Handle image upload with multer
+
+router.post(
+  "/",
+  validateToken,
+  upload.fields([
+    { name: "image", maxCount: 1 },
+    { name: "pdf", maxCount: 1 },
+  ]),
+  createPublication
+);
 router.get("/", getPublications);
 router.get("/:id", validateToken, getPublicationById); // New route for fetching publication details
 router.patch("/:id/like", validateToken, likePublication);

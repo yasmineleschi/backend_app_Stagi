@@ -69,6 +69,16 @@ const unlikePublication = asyncHandler(async (req, res) => {
   res.status(200).json({ likes: publication.likes });
 });
 
+
+
+
+
+
+
+
+
+
+
 // Add a comment to a publication
 const addComment = asyncHandler(async (req, res) => {
   const { text } = req.body;
@@ -95,6 +105,11 @@ const addComment = asyncHandler(async (req, res) => {
 
   res.status(201).json(publication.comments);
 });
+
+
+
+
+
 
 const getPublicationById = asyncHandler(async (req, res) => {
   const publication = await Publication.findById(req.params.id)

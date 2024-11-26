@@ -1,30 +1,38 @@
-const multer = require('multer');
-const path = require('path');
+const multer = require("multer");
+const fs = require("fs");
+const path = require("path");
 
+const uploadDirectory = path.join(__dirname, "../uploadsAttachment");
+
+// Vérifier et créer le dossier si nécessaire
+if (!fs.existsSync(uploadDirectory)) {
+  fs.mkdirSync(uploadDirectory, { recursive: true });
+  console.log(`Directory created: ${uploadDirectory}`);
+}
 
 const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, 'uploads/profiles'); 
-    },
-    filename: (req, file, cb) => {
-        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-        cb(null, file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname)); 
-    }
+  destination: (req, file, cb) => {
+    cb(null, uploadDirectory);
+  },
+  filename: (req, file, cb) => {
+    const uniqueName = `${Date.now()}-${file.originalname}`;
+    cb(null, uniqueName);
+  },
 });
 
-const upload = multer({ 
-    storage: storage,
-    limits: { fileSize: 1024 * 1024 * 5 }, 
-    fileFilter: (req, file, cb) => {
-        const filetypes = /jpeg|jpg|png|gif/; 
-        const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
-        const mimetype = filetypes.test(file.mimetype);
+const fileFilter = (req, file, cb) => {
+  const allowedTypes = ["application/pdf", "image/jpeg", "image/png"];
+  if (!allowedTypes.includes(file.mimetype)) {
+    cb(new Error("Invalid file type. Only PDF, JPEG, and PNG are allowed."));
+  } else {
+    cb(null, true);
+  }
+};
 
-        if (extname && mimetype) {
-            return cb(null, true);
-        }
-        cb('Error: File upload only supports the following filetypes - ' + filetypes);
-    }
+const upload = multer({
+  storage,
+  fileFilter,
+  limits: { fileSize: 5 * 1024 * 1024 }, // Limite : 5 Mo
 });
 
 module.exports = upload;

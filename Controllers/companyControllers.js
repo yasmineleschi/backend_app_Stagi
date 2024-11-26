@@ -8,11 +8,7 @@ const createCompanyProfile = asyncHandler(async (req, res) => {
 
     try {
 
-        if (!userId || !name || !sector) {
-            return res.status(400).json({ message: "Missing required fields: userId, name, or sector" });
-        }
-
-       
+    
         const user = await User.findById(userId);
         if (!user) {
             return res.status(404).json({ message: "User not found" });

@@ -1,5 +1,6 @@
 const asyncHandler = require("express-async-handler");
 const Publication = require("../Models/Publication");
+
 const multer = require("multer");
 
 // Configure multer storage
@@ -12,11 +13,26 @@ const storage = multer.diskStorage({
   },
 });
 
-const upload = multer({ storage }); // Initialize multer with storage configuration
+// File filter for PDFs and images
+const fileFilter = (req, file, cb) => {
+  const allowedMimeTypes = ["image/jpeg", "image/png", "application/pdf"];
+  if (allowedMimeTypes.includes(file.mimetype)) {
+    cb(null, true);
+  } else {
+    cb(new Error("Invalid file type. Only images and PDFs are allowed."), false);
+  }
+};
+
+const upload = multer({ storage, fileFilter }); // Initialize multer
 
 const createPublication = asyncHandler(async (req, res) => {
   const { title, content } = req.body;
-  const image = req.file ? `http://localhost:5001/${req.file.path.replace(/\\/g, '/')}` : null;
+  const image = req.files?.image
+    ? `http://localhost:5001/${req.files.image[0].path.replace(/\\/g, "/")}`
+    : null;
+  const pdf = req.files?.pdf
+    ? `http://localhost:5001/${req.files.pdf[0].path.replace(/\\/g, "/")}`
+    : null;
 
   if (!title || !content) {
     res.status(400);
@@ -26,12 +42,14 @@ const createPublication = asyncHandler(async (req, res) => {
   const publication = await Publication.create({
     title,
     content,
-    image, // Save full image URL
+    image,
+    pdf, // Save PDF file URL
     user: req.user.id,
   });
 
   res.status(201).json(publication);
 });
+
 
 
 // Get all publications

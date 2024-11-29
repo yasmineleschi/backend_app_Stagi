@@ -1,6 +1,5 @@
 require("dotenv").config();
 const express = require("express");
-const mongoose = require("mongoose");
 const cors = require("cors");
 const bodyParser = require("body-parser");
 const connectDb = require("./Config/DbConnection");
@@ -17,14 +16,14 @@ app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
-app.use("/uploadsAttachmment", express.static("uploadsAttachmment")); 
+app.use('/uploadsAttachmment', express.static(path.join(__dirname, 'uploadsAttachmment'))); 
 
 app.use("/api/publications", require("./Routers/publicationRouter"));
 app.use("/api/users", require("./Routers/UserRouters"));
 app.use("/api/users/profile", require("./Routers/StudentRouters"));
 app.use("/api/institutions", require("./Routers/InstitutionRouters"));
 app.use("/api/companies",  require("./Routers/CompanyRouters"));
-app.use("/api/attachment",  require("./Routers/CompanyRouters"));
+app.use("/api/attachment",  require("./Routers/attachmentRoutes"));
 app.use(errorHandler);
 
 app.listen(port, () => console.log(`Server running on port ${port}`));

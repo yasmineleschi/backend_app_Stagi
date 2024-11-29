@@ -22,27 +22,10 @@ const fileFilter = (req, file, cb) => {
   }
 };
 
-const upload = multer({ storage, fileFilter }); // Initialize multer
-
-// Controller for creating a publication
-const createPublication = asyncHandler(async (req, res) => {
-  const { title, content } = req.body;
-  const image = req.files?.image ? `http://localhost:5001/${req.files.image[0].path.replace(/\\/g, "/")}` : null;
-  const pdf = req.files?.pdf ? `http://localhost:5001/${req.files.pdf[0].path.replace(/\\/g, "/")}` : null;
-
-  if (!title || !content) {
-    res.status(400);
-    throw new Error("Title and content are required!");
-  }
-
-  const publication = await Publication.create({
-    title,
-    content,
-    image,
-    pdf,
-    user: req.user.id,
-  });
-
-  res.status(201).json(publication);
+const upload = multer({
+  storage,
+  fileFilter,
+  limits: { fileSize: 5 * 1024 * 1024 }, // Limite : 5 Mo
 });
 
+module.exports = upload;

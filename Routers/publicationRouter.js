@@ -7,6 +7,8 @@ const {
   unlikePublication,
   addComment,
   getPublicationById, // Import the new function
+  deleteComment,
+  updateComment,
 } = require("../Controllers/publicationController");
 const validateToken = require("../Middleware/validateTokenHandler");
 
@@ -27,5 +29,7 @@ router.get("/:id", validateToken, getPublicationById); // New route for fetching
 router.patch("/:id/like", validateToken, likePublication);
 router.patch("/:id/unlike", validateToken, unlikePublication);
 router.post("/:id/comment", validateToken, addComment);
+router.put("/:id/comments", validateToken, updateComment);
+router.delete("/:id/comment", validateToken, deleteComment);
 
 module.exports = router;

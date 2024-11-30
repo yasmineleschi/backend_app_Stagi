@@ -24,6 +24,7 @@ app.use("/api/users/profile", require("./Routers/StudentRouters"));
 app.use("/api/institutions", require("./Routers/InstitutionRouters"));
 app.use("/api/companies",  require("./Routers/CompanyRouters"));
 app.use("/api/attachment",  require("./Routers/attachmentRoutes"));
+app.use("/api/internshipApply",  require("./Routers/InternshipApplyRouters"));
 app.use(errorHandler);
 
 app.listen(port, () => console.log(`Server running on port ${port}`));

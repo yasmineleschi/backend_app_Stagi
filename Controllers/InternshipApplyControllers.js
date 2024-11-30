@@ -32,7 +32,7 @@ const getCompanyApplications = asyncHandler(async (req, res) => {
       .populate("studentId")
       .populate("attachmentId");
 
-    const filteredApplications = applications.filter(app => app.internshipId); // Filter out null internships
+    const filteredApplications = applications.filter(app => app.internshipId); 
 
     res.status(200).json(filteredApplications);
   } catch (error) {

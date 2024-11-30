@@ -106,6 +106,7 @@ const getInternship = asyncHandler(async (req, res) => {
                     ...internship,
                     companyName: company.name,
                     companyAddress: company.address,
+                    companyId: company._id,
                 }))
         );
 

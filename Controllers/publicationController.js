@@ -87,15 +87,78 @@ const unlikePublication = asyncHandler(async (req, res) => {
   res.status(200).json({ likes: publication.likes });
 });
 
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+// Update a comment on a publication
+const updateComment = asyncHandler(async (req, res) => {
+  const { commentId, text } = req.body;
 
+  if (!text) {
+    res.status(400);
+    throw new Error("Updated comment text is required!");
+  }
 
+  const publication = await Publication.findById(req.params.id);
 
+  if (!publication) {
+    res.status(404);
+    throw new Error("Publication not found");
+  }
 
+  // Find the comment
+  const comment = publication.comments.id(commentId);
 
+  if (!comment) {
+    res.status(404);
+    throw new Error("Comment not found");
+  }
 
+  // Check if the user owns the comment
+  if (comment.user.toString() !== req.user.id) {
+    res.status(403);
+    throw new Error("You are not authorized to update this comment");
+  }
 
+  // Update the comment
+  comment.text = text;
+  await publication.save();
 
+  res.status(200).json(publication.comments);
+});
+ 
+
+// Delete a comment from a publication
+const deleteComment = asyncHandler(async (req, res) => {
+  const { commentId } = req.body;
+
+  const publication = await Publication.findById(req.params.id);
+
+  if (!publication) {
+    res.status(404);
+    throw new Error("Publication not found");
+  }
+
+  // Find the comment
+  const comment = publication.comments.id(commentId);
+
+  if (!comment) {
+    res.status(404);
+    throw new Error("Comment not found");
+  }
+
+  // Check if the user owns the comment
+  if (comment.user.toString() !== req.user.id) {
+    res.status(403);
+    throw new Error("You are not authorized to delete this comment");
+  }
+
+  // Remove the comment
+  comment.remove();
+  await publication.save();
+
+  res.status(200).json(publication.comments);
+});
+ 
 
 // Add a comment to a publication
 const addComment = asyncHandler(async (req, res) => {
@@ -125,7 +188,7 @@ const addComment = asyncHandler(async (req, res) => {
 });
 
 
-
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
 
@@ -139,9 +202,17 @@ const getPublicationById = asyncHandler(async (req, res) => {
     throw new Error("Publication not found");
   }
 
-  console.log(publication); // Debugging
+  // Generate full URLs for image and PDF if they exist
+  if (publication.image && !publication.image.startsWith("http")) {
+    publication.image = `http://localhost:5001/${publication.image.replace(/\\/g, "/")}`;
+  }
+  if (publication.pdf && !publication.pdf.startsWith("http")) {
+    publication.pdf = `http://localhost:5001/${publication.pdf.replace(/\\/g, "/")}`;
+  }
+
   res.status(200).json(publication);
 });
+
 
 const updateImages = async () => {
   const publications = await Publication.find();
@@ -166,4 +237,6 @@ module.exports = {
   unlikePublication,
   addComment,
   getPublicationById,
+  deleteComment,
+  updateComment,
 };

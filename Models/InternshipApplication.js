@@ -29,6 +29,9 @@ const internshipApplicationSchema = mongoose.Schema(
       type: Date,
       default: Date.now,
     },
+    interviewDate: { 
+      type: Date
+     },
   },
   {
     timestamps: true,

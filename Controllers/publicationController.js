@@ -28,10 +28,10 @@ const upload = multer({ storage, fileFilter }); // Initialize multer
 const createPublication = asyncHandler(async (req, res) => {
   const { title, content } = req.body;
   const image = req.files?.image
-    ? `http://localhost:5001/${req.files.image[0].path.replace(/\\/g, "/")}`
+    ? `http://10.0.2.2:5001/${req.files.image[0].path.replace(/\\/g, "/")}`
     : null;
   const pdf = req.files?.pdf
-    ? `http://localhost:5001/${req.files.pdf[0].path.replace(/\\/g, "/")}`
+    ? `http://10.0.2.2:5001/${req.files.pdf[0].path.replace(/\\/g, "/")}`
     : null;
 
   if (!title || !content) {

@@ -52,10 +52,22 @@ const createPublication = asyncHandler(async (req, res) => {
 
 
 
-// Get all publications
 const getPublications = asyncHandler(async (req, res) => {
-  const publications = await Publication.find().populate("user", "username email");
-  res.status(200).json(publications);
+  const publications = await Publication.find()
+    .populate("user", "username email");
+
+  // Map over publications to update image and PDF URLs
+  const updatedPublications = publications.map((publication) => {
+    if (publication.image && !publication.image.startsWith("http")) {
+      publication.image = `http://localhost:5001/${publication.image.replace(/\\/g, "/")}`;
+    }
+    if (publication.pdf && !publication.pdf.startsWith("http")) {
+      publication.pdf = `http://localhost:5001/${publication.pdf.replace(/\\/g, "/")}`;
+    }
+    return publication;
+  });
+
+  res.status(200).json(updatedPublications);
 });
 
 const likePublication = asyncHandler(async (req, res) => {

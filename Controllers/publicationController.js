@@ -59,10 +59,10 @@ const getPublications = asyncHandler(async (req, res) => {
   // Map over publications to update image and PDF URLs
   const updatedPublications = publications.map((publication) => {
     if (publication.image && !publication.image.startsWith("http")) {
-      publication.image = `http://localhost:5001/${publication.image.replace(/\\/g, "/")}`;
+      publication.image = `http://10.0.2.2:5001/${publication.image.replace(/\\/g, "/")}`;
     }
     if (publication.pdf && !publication.pdf.startsWith("http")) {
-      publication.pdf = `http://localhost:5001/${publication.pdf.replace(/\\/g, "/")}`;
+      publication.pdf = `http://10.0.2.2:5001/${publication.pdf.replace(/\\/g, "/")}`;
     }
     return publication;
   });
@@ -216,10 +216,10 @@ const getPublicationById = asyncHandler(async (req, res) => {
 
   // Generate full URLs for image and PDF if they exist
   if (publication.image && !publication.image.startsWith("http")) {
-    publication.image = `http://localhost:5001/${publication.image.replace(/\\/g, "/")}`;
+    publication.image = `http://10.0.2.2:5001/${publication.image.replace(/\\/g, "/")}`;
   }
   if (publication.pdf && !publication.pdf.startsWith("http")) {
-    publication.pdf = `http://localhost:5001/${publication.pdf.replace(/\\/g, "/")}`;
+    publication.pdf = `http://10.0.2.2:5001/${publication.pdf.replace(/\\/g, "/")}`;
   }
 
   res.status(200).json(publication);

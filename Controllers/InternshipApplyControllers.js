@@ -1,21 +1,24 @@
 const InternshipApplication = require("../Models/InternshipApplication");
 const asyncHandler = require("express-async-handler");
 
-const applyForInternship  = asyncHandler(async (req, res) => {
+const applyForInternship = asyncHandler(async (req, res) => {
   try {
-    const { internshipId, studentId, message, attachmentId } = req.body;
-
+    const { internshipId, studentId, message, attachmentId, internshipTitle } = req.body;
     const application = new InternshipApplication({
       internshipId,
+      internshipTitle,
       studentId,
       message,
       attachmentId,
     });
 
+  
     await application.save();
+
     res.status(201).json({ message: "Application submitted successfully.", application });
   } catch (error) {
-    res.status(500).json({ message: "Failed to submit application.", error });
+    console.error(error);  
+    res.status(500).json({ message: "Failed to submit application.", error: error.message });
   }
 });
 
@@ -75,11 +78,12 @@ const getStudentInternships = asyncHandler(async (req, res) => {
     const { studentId } = req.params;
 
     const applications = await InternshipApplication.find({ studentId })
-      .populate("internshipId", "_id title description requirements startDate endDate")
+      .populate("internshipId", "name")
       .populate("attachmentId", "_id fileName");
 
     const internships = applications.map((app) => ({
       internship: app.internshipId,
+      internshipTitle: app.internshipTitle,
       message: app.message,
       status: app.status,
       appliedAt: app.appliedAt,

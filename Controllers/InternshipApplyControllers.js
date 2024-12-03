@@ -33,7 +33,7 @@ const getCompanyApplications = asyncHandler(async (req, res) => {
         match: { userId: companyId }, 
       })
       .populate("studentId")
-      .populate("attachmentId");
+      .populate("attachmentId" , "fileName");
 
     const filteredApplications = applications.filter(app => app.internshipId); 
 

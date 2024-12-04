@@ -2,12 +2,10 @@ const multer = require("multer");
 const fs = require("fs");
 const path = require("path");
 
-const uploadDirectory = path.join(__dirname, "../uploadsAttachment");
+const uploadDirectory = path.resolve(__dirname, "../uploadsAttachment");
 
-// Vérifier et créer le dossier si nécessaire
 if (!fs.existsSync(uploadDirectory)) {
   fs.mkdirSync(uploadDirectory, { recursive: true });
-  console.log(`Directory created: ${uploadDirectory}`);
 }
 
 const storage = multer.diskStorage({
@@ -15,15 +13,16 @@ const storage = multer.diskStorage({
     cb(null, uploadDirectory);
   },
   filename: (req, file, cb) => {
-    const uniqueName = `${Date.now()}-${file.originalname}`;
-    cb(null, uniqueName);
+
+    const originalName = file.originalname.replace(/\s/g, "_");
+    cb(null, originalName);
   },
 });
 
 const fileFilter = (req, file, cb) => {
   const allowedTypes = ["application/pdf", "image/jpeg", "image/png"];
   if (!allowedTypes.includes(file.mimetype)) {
-    cb(new Error("Invalid file type. Only PDF, JPEG, and PNG are allowed."));
+    cb(new Error("Type de fichier invalide. Seuls PDF, JPEG et PNG sont autorisés."));
   } else {
     cb(null, true);
   }

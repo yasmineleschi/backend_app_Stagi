@@ -12,6 +12,10 @@ const internshipApplicationSchema = mongoose.Schema(
       ref: "Student", 
       required: true,
     },
+    internshipTitle: {
+      type: String, 
+     
+    },
     message: {
       type: String,
       required: true,
@@ -29,6 +33,9 @@ const internshipApplicationSchema = mongoose.Schema(
       type: Date,
       default: Date.now,
     },
+    interviewDate: { 
+      type: Date
+     },
   },
   {
     timestamps: true,

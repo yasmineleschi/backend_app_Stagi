@@ -9,7 +9,6 @@ const {
 
 const router = express.Router();
 
-
 router.post("/apply", applyForInternship);
 router.get("/company/:companyId", getCompanyApplications);
 router.put("/:applicationId", updateApplicationStatus);

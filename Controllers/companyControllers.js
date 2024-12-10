@@ -134,34 +134,10 @@ const getCompanyProfile = asyncHandler(async (req, res) => {
     }
 });
 
-const deleteInternship = asyncHandler(async (req, res) => {
-    const { companyId, internshipId } = req.params;
-
-    try {
-        const company = await Company.findById(companyId);
-        if (!company) {
-            return res.status(404).json({ message: "Company not found" });
-        }
-
-        const internship = company.internships.id(internshipId);
-        if (!internship) {
-            return res.status(404).json({ message: "Internship not found" });
-        }
-
-        internship.remove();
-        await company.save();
-
-        res.status(200).json({ message: "Internship deleted successfully" });
-    } catch (error) {
-        console.error("Error in deleteInternship:", error);
-        res.status(500).json({ message: "An error occurred while deleting the internship", error: error.message });
-    }
-});
 
 module.exports = {
     createCompanyProfile,
     updateCompanyProfile,
     getCompanyProfile,
-    deleteInternship,
     getInternship,
 };

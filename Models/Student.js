@@ -30,7 +30,6 @@ const studentSchema = mongoose.Schema(
       type: String,
     
     },
- 
     education: [
       {
         degree: {

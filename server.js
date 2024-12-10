@@ -16,7 +16,7 @@ app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
-app.use('/uploadsAttachment', express.static(path.join(__dirname, 'uploadsAttachment'))); 
+app.use('/uploadsAttachment', express.static(path.join(__dirname, 'uploadsAttachment')));
 
 app.use("/api/publications", require("./Routers/publicationRouter"));
 app.use("/api/users", require("./Routers/UserRouters"));
@@ -27,4 +27,9 @@ app.use("/api/attachment",  require("./Routers/attachmentRoutes"));
 app.use("/api/internshipApply",  require("./Routers/InternshipApplyRouters"));
 app.use(errorHandler);
 
-app.listen(port, () => console.log(`Server running on port ${port}`));
+// Do not start the server here in test mode
+if (process.env.NODE_ENV !== 'test') {
+  app.listen(port, () => console.log(`Server running on port ${port}`));
+}
+
+module.exports = app;  // Export the app instance

@@ -1,9 +1,11 @@
 const request = require("supertest");
 const mongoose = require("mongoose");
-const app = require("../server"); // Make sure this points to your Express app
+const app = require("../server"); // Updated server export
 const User = require("../Models/User");
 const Company = require("../Models/Company");
 const { connectTestDb, closeTestDb, clearTestDb } = require("./testDb");
+
+let server; // Variable to hold the server instance
 
 describe("Company Routes", () => {
   let userId;
@@ -11,7 +13,7 @@ describe("Company Routes", () => {
 
   beforeAll(async () => {
     await connectTestDb();
-    // Create a test user
+    server = app.listen(4000); // Start the server on a specific port for testing
     const user = new User({
       username: "TestUser",
       email: "testuser@example.com",
@@ -24,6 +26,7 @@ describe("Company Routes", () => {
 
   afterAll(async () => {
     await closeTestDb();
+    await server.close(); // Ensure the server shuts down
   });
 
   afterEach(async () => {
@@ -51,7 +54,6 @@ describe("Company Routes", () => {
 
     const companyProfile = await Company.findOne({ userId });
     expect(companyProfile).not.toBeNull();
-   
   });
 
   test("should return 404 if company profile is not found", async () => {
@@ -77,7 +79,7 @@ describe("Company Routes", () => {
   test("should return 404 if company profile is not found during get request", async () => {
     const nonExistentUserId = new mongoose.Types.ObjectId();
     const response = await request(app).get(`/api/companies/fetch/${nonExistentUserId}`);
-    
+
     expect(response.status).toBe(404);
     expect(response.body.message).toBe("Company profile not found");
   });
@@ -115,13 +117,13 @@ describe("Company Routes", () => {
       ],
     });
 
-    await company.save(); // Save company with internships
+    await company.save();
 
     const response = await request(app).get("/api/companies/internships");
 
     expect(response.status).toBe(200);
     expect(response.body.success).toBe(true);
-    expect(response.body.data.length).toBeGreaterThan(0); // Expect at least 1 internship
+    expect(response.body.data.length).toBeGreaterThan(0);
     expect(response.body.data).toEqual(
       expect.arrayContaining([
         expect.objectContaining({

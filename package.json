@@ -6,9 +6,7 @@
     "test": "jest",
     "start": "nodemon server.js"
   },
-  "jest": {
-  "testEnvironment": "node"
-  },
+
   "keywords": [],
   "author": "YASMINE ELESCHI",
   "license": "ISC",

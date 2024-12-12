@@ -17,8 +17,7 @@ const applyForInternship = asyncHandler(async (req, res) => {
 
     res.status(201).json({ message: "Application submitted successfully.", application });
   } catch (error) {
-    console.error(error);  
-    res.status(500).json({ message: "Failed to submit application.", error: error.message });
+    res.status(500).json({ message: "Failed to submit application.", error });
   }
 });
 

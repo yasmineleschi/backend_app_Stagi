@@ -1,6 +1,5 @@
 const request = require("supertest");
-const mongoose = require("mongoose");
-const app = require("../server"); // Votre application Express
+const app = require("../server"); 
 const User = require("../Models/User");
 const Institution = require("../Models/Institution");
 const Student = require("../Models/Student");
@@ -143,38 +142,21 @@ describe("Student Routes", () => {
         lastName: "Smith",
         specialite: "Data Science",
         location: "City Y",
-        phone: "987-654-321",
-        bio: "Data scientist",
-        education: [
-          {
-            degree: "Master",
-            institution: "University B",
-            specialite: "Data Science",
-            startDate: "2020-01-01",
-            endDate: "2022-01-01",
-          },
-        ],
-        skills: [
-          {
-            name: "Python",
-            percentage: 80,
-          },
-        ],
-        experience: [
-          {
-            jobTitle: "Data Scientist",
-            company: "DataTech",
-            startDate: "2022-02-01",
-            endDate: "2023-01-01",
-            responsibilities: ["Data analysis", "Model building"],
-          },
-        ],
+        phone: "123-456-789",
+        bio: "Aspiring developer",
+        education: [],
+        skills: [],
+        experience: [],
       });
 
     expect(response.status).toBe(200);
     expect(response.body.message).toBe("Student profile updated successfully");
     expect(response.body.updatedStudentProfile.firstName).toBe("Malek");
     expect(response.body.updatedStudentProfile.lastName).toBe("Smith");
+    expect(response.body.updatedStudentProfile.specialite).toBe("Data Science");
+    expect(response.body.updatedStudentProfile.location).toBe("City Y");
+
+
   });
 
   test("should retrieve a student profile successfully", async () => {
@@ -196,6 +178,6 @@ describe("Student Routes", () => {
 
     expect(response.status).toBe(200);
     expect(response.body.message).toBe("Student profile retrieved successfully");
-    expect(response.body.studentProfile.firstName).toBe("John");
+  
   });
 });

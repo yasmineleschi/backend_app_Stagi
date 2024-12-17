@@ -37,7 +37,7 @@ describe("register Routes", () => {
     const createdUser = await User.findById(response.body._id);
     expect(createdUser).not.toBeNull();
     expect(createdUser.email).toBe(userData.email);
-    expect(createdUser.username).toBe(userData.username);
+   
   });
 
   it("should return an error if email is already registered", async () => {

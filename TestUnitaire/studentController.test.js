@@ -155,6 +155,10 @@ describe("Student Routes", () => {
     expect(response.body.updatedStudentProfile.lastName).toBe("Smith");
     expect(response.body.updatedStudentProfile.specialite).toBe("Data Science");
     expect(response.body.updatedStudentProfile.location).toBe("City Y");
+    expect(response.body.updatedStudentProfile.phone).toBe("123-456-789");
+    expect(response.body.updatedStudentProfile.bio).toBe("Aspiring developer");
+
+
 
 
   });

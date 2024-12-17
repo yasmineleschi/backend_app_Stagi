@@ -134,10 +134,60 @@ const getCompanyProfile = asyncHandler(async (req, res) => {
     }
 });
 
+const filterCompanies = asyncHandler(async (req, res) => {
+    try {
+        const filters = {};
+
+     
+        if (req.query.name) {
+            filters.name = { $regex: req.query.name, $options: "i" }; 
+        }
+        if (req.query.sector) {
+            filters.sector = { $regex: req.query.sector, $options: "i" };
+        }
+        if (req.query.address) {
+            filters.address = { $regex: req.query.address, $options: "i" };
+        }
+
+        // Internship level filters (all possible fields inside the internship)
+        if (
+            req.query.internshipTitle ||
+            req.query.internshipDescription ||
+            req.query.internshipRequirements 
+        ) {
+            filters.internships = {
+                $elemMatch: {
+                    ...(req.query.internshipTitle && { title: { $regex: req.query.internshipTitle, $options: "i" } }),
+                    ...(req.query.internshipDescription && { description: { $regex: req.query.internshipDescription, $options: "i" } }),
+                    ...(req.query.internshipRequirements && { requirements: { $in: req.query.internshipRequirements.split(",") } }),
+
+                },
+            };
+        }
+
+        // Fetch companies based on filters
+        const companies = await Company.find(filters).lean();
+
+        if (!companies.length) {
+            return res.status(404).json({ message: "No companies found matching the criteria" });
+        }
+
+        res.status(200).json({ success: true, data: companies });
+    } catch (error) {
+        console.error("Error in filterCompanies:", error);
+        res.status(500).json({ success: false, message: "Server Error", error: error.message });
+    }
+});
+
 
 module.exports = {
     createCompanyProfile,
     updateCompanyProfile,
     getCompanyProfile,
     getInternship,
+    filterCompanies,
 };
+
+
+
+

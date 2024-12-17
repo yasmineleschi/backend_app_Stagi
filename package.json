@@ -2,6 +2,9 @@
   "name": "backend_stagi",
   "version": "1.0.0",
   "main": "server.js",
+  "engines": {
+    "node": "14x"
+  },
   "scripts": {
     "test": "jest",
     "start": "nodemon server.js"

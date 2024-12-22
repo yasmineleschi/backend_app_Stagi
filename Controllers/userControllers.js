@@ -48,32 +48,44 @@ const registerUser = asyncHandler(async (req, res) => {
   }
 });
 
-
 const loginUser = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
+
+  if (!email || !password) {
+    return res.status(400).json({ error: "Email and password are required" });
+  }
 
   const user = await User.findOne({ email });
 
   if (user && (await bcrypt.compare(password, user.password))) {
     const accessToken = jwt.sign(
-      { user: { id: user.id, email: user.email, username: user.username, role: user.role } },  // Include role in the JWT payload
+      {
+        user: {
+          id: user.id,
+          email: user.email,
+          username: user.username,
+          role: user.role,
+        },
+      },
       process.env.ACCESS_TOKEN_SECRET,
       { expiresIn: "15m" }
     );
 
-    res.status(200).json({
+    return res.status(200).json({
       message: "User logged in successfully",
       accessToken,
       userId: user.id,
-      role: user.role,  // Return role as part of the response
-      user: { id: user.id, username: user.username, email: user.email },
+      role: user.role,
+      user: {
+        id: user.id,
+        username: user.username,
+        email: user.email,
+      },
     });
   } else {
-    res.status(401).json({ error: "Invalid credentials" });
+    return res.status(401).json({ error: "Invalid credentials" });
   }
 });
-
-
 
 const currentUser = asyncHandler(async (req, res) => {
   res.json(req.user);

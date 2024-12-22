@@ -5,12 +5,22 @@ let mongoServer;
 
 const connectTestDb = async () => {
   if (!mongoServer) {
+    // Initialize MongoMemoryServer if it's not already initialized
     mongoServer = await MongoMemoryServer.create();
   }
 
+  const uri = mongoServer.getUri(); // Get the URI for the in-memory database
+
+  if (!uri) {
+    throw new Error("MongoDB Memory Server URI is undefined.");
+  }
+
+  // Ensure the database connection
   if (mongoose.connection.readyState === 0) {
-    const uri = mongoServer.getUri();
-    await mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+    await mongoose.connect(uri, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
   }
 };
 
@@ -29,8 +39,6 @@ const clearTestDb = async () => {
     await collections[key].deleteMany({});
   }
 };
-
-
 
 module.exports = {
   connectTestDb,

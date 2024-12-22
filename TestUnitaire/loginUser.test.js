@@ -1,34 +1,40 @@
-const loginUser = require("../Controllers/userControllers").loginUser; // Correct relative path
-const User = require("../Models/User");
+require("dotenv").config(); // Load environment variables
+
+const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-////////////////   npx jest Unit_Tests/loginUser.test.js ///////////////////
-// Mocking dependencies
-jest.mock("../Models/User");
-jest.mock("bcryptjs");
-jest.mock("jsonwebtoken");
+const User = require("../Models/User"); // Import your User model
+const { loginUser } = require("../Controllers/userControllers");
 
-describe("loginUser function", () => {
-  it("should log in a user with valid credentials", async () => {
-    const mockUser = {
-      id: "123",
-      email: "test@example.com",
-      username: "testuser",
-      password: "hashedpassword",
+describe("loginUser function - Real Database Test", () => {
+  beforeAll(async () => {
+    // Connect to the test database
+    await mongoose.connect(process.env.CONNECTION_STRING);
+
+    // Clear the database before populating it
+    await User.deleteMany();
+
+    // Add the test user
+    const hashedPassword = await bcrypt.hash("123456789", 10);
+    await User.create({
+      email: "sirin@gmail.com",
+      password: hashedPassword,
+      username: "sirin",
       role: "Student",
-    };
+    });
+  });
 
-    // Mocking User.findOne to return a user
-    User.findOne.mockResolvedValue(mockUser);
+  afterAll(async () => {
+    // Clean up and close the database connection
+    await mongoose.connection.close();
+  });
 
-    // Mocking bcrypt.compare to return true
-    bcrypt.compare.mockResolvedValue(true);
-
-    // Mocking jwt.sign to return a token
-    jwt.sign.mockReturnValue("mockToken");
-
+  it("should log in an existing user with correct credentials", async () => {
     const req = {
-      body: { email: "test@example.com", password: "password" },
+      body: {
+        email: "sirin@gmail.com",
+        password: "123456789",
+      },
     };
 
     const res = {
@@ -38,30 +44,26 @@ describe("loginUser function", () => {
 
     await loginUser(req, res);
 
-    expect(User.findOne).toHaveBeenCalledWith({ email: "test@example.com" });
-    expect(bcrypt.compare).toHaveBeenCalledWith("password", "hashedpassword");
-    expect(jwt.sign).toHaveBeenCalled();
     expect(res.status).toHaveBeenCalledWith(200);
     expect(res.json).toHaveBeenCalledWith(
       expect.objectContaining({
         message: "User logged in successfully",
-        accessToken: "mockToken",
-        userId: "123",
+        accessToken: expect.any(String),
+        userId: expect.any(String),
         role: "Student",
         user: expect.objectContaining({
-          id: "123",
-          username: "testuser",
-          email: "test@example.com",
+          email: "sirin@gmail.com",
         }),
       })
     );
   });
 
   it("should return 401 for invalid credentials", async () => {
-    User.findOne.mockResolvedValue(null);
-
     const req = {
-      body: { email: "wrong@example.com", password: "password" },
+      body: {
+        email: "sirin@gmail.com",
+        password: "wrongpassword",
+      },
     };
 
     const res = {
@@ -71,8 +73,9 @@ describe("loginUser function", () => {
 
     await loginUser(req, res);
 
-    expect(User.findOne).toHaveBeenCalledWith({ email: "wrong@example.com" });
     expect(res.status).toHaveBeenCalledWith(401);
-    expect(res.json).toHaveBeenCalledWith({ error: "Invalid credentials" });
+    expect(res.json).toHaveBeenCalledWith({
+      error: "Invalid credentials",
+    });
   });
 });
